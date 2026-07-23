@@ -1,0 +1,36 @@
+name: Build DragonHeart Kernel
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout kernel source
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bc bison flex libssl-dev libelf-dev \
+            build-essential python3 cpio rsync zip unzip curl git wget dialog
+
+      - name: Build kernel
+        env:
+          CI: "1"
+        run: |
+          chmod +x kramel.sh
+          bash kramel.sh img
+
+      - name: Build AnyKernel3 zip
+        env:
+          CI: "1"
+        run: |
+          bash kramel.sh mkzip
+
+      - name: Upload kernel zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: DragonHeart-cancunf
+          path: anykernel3-dragonheart/*.zip
