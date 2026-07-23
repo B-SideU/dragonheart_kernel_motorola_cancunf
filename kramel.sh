@@ -311,7 +311,7 @@ img() {
 	rgn
 	echo -e "\n\e[1;93m[*] Building kernel! \e[0m"
 	BUILD_START=$(date +"%s")
-	time make -j"$PROCS" "${MAKE[@]}" 2>&1 | tee log.txt
+    time make -j"$PROCS" "${MAKE[@]}" Image.gz dtbs 2>&1 | tee log.txt
 	BUILD_END=$(date +"%s")
 	DIFF=$((BUILD_END - BUILD_START))
 	if [ -f "${OUT_DIR}/arch/arm64/boot/Image.gz" ]; then
@@ -321,7 +321,7 @@ img() {
 		echo -e "\n\e[1;32m[✓] Kernel built after $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! \e[0m"
 		echo -e "\n\e[1;93m[*] Copying built files! \e[0m"
 		mkdir -p "${DIST_DIR}" || abort "Failed to create distribution output directory"
-		cp -p "${OUT_DIR}"/arch/arm64/boot/{Image.gz,dtbo.img,dts/mediatek/mt6855.dtb} "${DIST_DIR}"/ ||
+		cp -p "${OUT_DIR}"/arch/arm64/boot/{Image.gz,dts/mediatek/mt6855.dtb} "${DIST_DIR}"/ ||
 			abort "Failed to copy built files!"
 		echo -e "\n\e[1;32m[✓] Copied built files! \e[0m"
 	else
